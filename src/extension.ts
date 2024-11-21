@@ -278,6 +278,70 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('cnc-mbl.number', async () => {
+		var editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			return; // No open text editor
+		}
+
+		var document = editor.document;
+
+		vscode.languages.setTextDocumentLanguage(editor.document, "sinumerik");
+
+		let i = 0;
+		const result = await vscode.window.showQuickPick(['1', '2', '5', '10'], {
+			placeHolder: 'Schrittfolge...',
+		});
+
+		if (result)
+			var numberSpan = parseInt(result);
+
+		const mpfPattern = /^\s*%MPF\s*(\d+)/g;
+		const spfPattern = /^\s*%SPF\s*(\d+)/g;
+		const commentPattern = /^\s*\(/g;
+		const startWhitespacePattern = /^\s*/g;
+		const lineNumberPattern = /^\s*[Nn]\s*[0-9]*\s*/g;
+
+		editor.edit(eb => {
+			var lineNumber = numberSpan;
+			for (var i = 0; i < document.lineCount; i++) {
+				var line = document.lineAt(i);
+
+				if (line.text.match(mpfPattern)) {
+					lineNumber = numberSpan;
+					continue;
+				}
+
+				if (line.text.match(spfPattern)) {
+					lineNumber = numberSpan;
+					continue;
+				}
+
+				var match = line.text.match(lineNumberPattern);
+				if (match) {
+					var range = new vscode.Range(i, 0, i, match[0].length);
+					eb.replace(range, 'N' + lineNumber + ' ');
+					lineNumber += numberSpan;
+				}
+				else {
+					if (!line.text.match(commentPattern)) {
+						var match = line.text.match(startWhitespacePattern);
+						if (match) {
+							var range = new vscode.Range(i, 0, i, match[0].length);
+							eb.replace(range, 'N' + lineNumber + ' ');
+							lineNumber += numberSpan;
+						}
+						else {
+							var position = new vscode.Position(i, 0);
+							eb.insert(position, 'N' + lineNumber + ' ');
+							lineNumber += numberSpan;
+						}
+					}
+				}
+			}
+		});
+	}));
+
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("sinumerik", {
 		provideDocumentSymbols(document: vscode.TextDocument,
 			token: vscode.CancellationToken): Thenable<vscode.SymbolInformation[]> {

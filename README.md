@@ -11,5 +11,9 @@ Initial release.
 
 G41 <-> G42 hinzugefügt!
 
+### 0.0.4
+
+Satznummerierung hinzugefügt!
+
 
 **Enjoy!**

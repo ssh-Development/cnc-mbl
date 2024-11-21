@@ -1,8 +1,8 @@
 {
   "name": "cnc-mbl",
   "displayName": "cnc-mbl",
-  "description": "",
-  "version": "0.0.3",
+  "description": "VSC Erweiterung für Sinumerik Dateien.",
+  "version": "0.0.4",
   "publisher": "sshDevelopmentUG",
 	"author": {
 		"name": "Andreas Herderich",
@@ -28,6 +28,10 @@
         "title": "Sinumerik aktivieren"
       },
       {
+        "command": "cnc-mbl.number",
+        "title": "Satznummerierung"
+      },
+      {
         "command": "cnc-mbl.hc0",
         "title": "WKS -> MKS C0"
       },
@@ -47,7 +51,11 @@
     "menus": {
       "editor/context": [
         {
-          "command": "cnc-mbl.activate"
+          "command": "cnc-mbl.activate",
+          "when":"editorLangId != sinumerik"
+        },
+        {
+          "command": "cnc-mbl.number"
         },
         {
           "command": "cnc-mbl.hc0",

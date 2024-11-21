@@ -197,11 +197,7 @@
                     "name": "variable.other.sinumerik"
                 },
                 {
-                    "match":"^%_N_\\w*",
-                    "name": "variable.other.sinumerik"
-                },
-                {
-                    "match":"^;\\$PATH=\/_N_WKS_DIR\/_N_\\w*",
+                    "match":"^\\s*%(MPF|SPF)\\s*[0-9]+",
                     "name": "variable.other.sinumerik"
                 }
             ]
