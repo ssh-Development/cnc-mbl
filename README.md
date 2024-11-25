@@ -15,5 +15,13 @@ G41 <-> G42 hinzugefügt!
 
 Satznummerierung hinzugefügt!
 
+### 0.0.5
+
+Satznummerierung Bug gefixt!
+
+### 0.0.6
+
+FileIcon hinzugefügt!
+
 
 **Enjoy!**

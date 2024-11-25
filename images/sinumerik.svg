@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="103" height="85" viewBox="0 0 103 85">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 116.667px;
+        fill: #099;
+        font-family: Calibri;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <text id="SI" class="cls-1" x="8" y="80">SI</text>
+</svg>

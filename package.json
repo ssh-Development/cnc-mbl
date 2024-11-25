@@ -2,13 +2,13 @@
   "name": "cnc-mbl",
   "displayName": "cnc-mbl",
   "description": "VSC Erweiterung für Sinumerik Dateien.",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "publisher": "sshDevelopmentUG",
-	"author": {
-		"name": "Andreas Herderich",
-		"email": "a.herderich@sshdev.de",
-		"url": "https://sshdev.de"
-	},
+  "author": {
+    "name": "Andreas Herderich",
+    "email": "a.herderich@sshdev.de",
+    "url": "https://sshdev.de"
+  },
   "icon": "favicon.png",
   "engines": {
     "vscode": "^1.95.0"
@@ -52,10 +52,11 @@
       "editor/context": [
         {
           "command": "cnc-mbl.activate",
-          "when":"editorLangId != sinumerik"
+          "when": "editorLangId != sinumerik"
         },
         {
-          "command": "cnc-mbl.number"
+          "command": "cnc-mbl.number",
+          "when": "editorLangId == sinumerik"
         },
         {
           "command": "cnc-mbl.hc0",
@@ -76,24 +77,29 @@
       ]
     },
     "languages": [
-			{
-				"id": "sinumerik",
-				"aliases": [
-					"Sinumerik"
-				],
-				"extensions": [
-					""
-				],
-				"configuration": "./language-configuration.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "sinumerik",
-				"scopeName": "source.sinumerik",
-				"path": "./syntaxes/sinumerik.tmLanguage.json"
-			}
-		]
+      {
+        "id": "sinumerik",
+        "aliases": [
+          "Sinumerik"
+        ],
+        "extensions": [
+          ""
+        ],
+        "icon": {
+          "dark": "./images/sinumerik.svg",
+          "light": "./images/sinumerik.svg"
+        },
+        "firstLine": "^%(MPF|SPF)",
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sinumerik",
+        "scopeName": "source.sinumerik",
+        "path": "./syntaxes/sinumerik.tmLanguage.json"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
