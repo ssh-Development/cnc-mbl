@@ -28,7 +28,5 @@ FileIcon hinzugefügt!
 
 ( WERKZEUG <KWZID> <TNUMMERINFO> ) hinzugefügt!
 
-![](images/mblcnc.gif)
-
 
 **Enjoy!**
