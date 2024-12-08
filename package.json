@@ -2,7 +2,7 @@
   "name": "cnc-mbl",
   "displayName": "cnc-mbl",
   "description": "VSC Erweiterung für Sinumerik Dateien.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "sshDevelopmentUG",
   "author": {
     "name": "Andreas Herderich",
@@ -52,11 +52,11 @@
       "editor/context": [
         {
           "command": "cnc-mbl.activate",
-          "when": "editorLangId != sinumerik"
+          "when": "editorLangId != old_sinumerik"
         },
         {
           "command": "cnc-mbl.number",
-          "when": "editorLangId == sinumerik"
+          "when": "editorLangId == old_sinumerik"
         },
         {
           "command": "cnc-mbl.hc0",
@@ -78,9 +78,9 @@
     },
     "languages": [
       {
-        "id": "sinumerik",
+        "id": "old_sinumerik",
         "aliases": [
-          "Sinumerik"
+          "Sinumerik (Alt)"
         ],
         "extensions": [
           ""
@@ -95,9 +95,9 @@
     ],
     "grammars": [
       {
-        "language": "sinumerik",
-        "scopeName": "source.sinumerik",
-        "path": "./syntaxes/sinumerik.tmLanguage.json"
+        "language": "old_sinumerik",
+        "scopeName": "source.old_sinumerik",
+        "path": "./syntaxes/old_sinumerik.tmLanguage.json"
       }
     ]
   },

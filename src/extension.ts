@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return; // No open text editor
 		}
 
-		vscode.languages.setTextDocumentLanguage(editor.document, "sinumerik");
+		vscode.languages.setTextDocumentLanguage(editor.document, "old_sinumerik");
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('cnc-mbl.hc0', () => {
@@ -20,8 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!editor) {
 			return; // No open text editor
 		}
-
-		vscode.languages.setTextDocumentLanguage(editor.document, "sinumerik");
 
 		var selection = editor.selection;
 		if (selection && !selection.isEmpty) {
@@ -108,8 +106,6 @@ export function activate(context: vscode.ExtensionContext) {
 			return; // No open text editor
 		}
 
-		vscode.languages.setTextDocumentLanguage(editor.document, "sinumerik");
-
 		var selection = editor.selection;
 		if (selection && !selection.isEmpty) {
 			const selectionRange = new vscode.Range(selection.start, selection.end);
@@ -182,8 +178,6 @@ export function activate(context: vscode.ExtensionContext) {
 			return; // No open text editor
 		}
 
-		vscode.languages.setTextDocumentLanguage(editor.document, "sinumerik");
-
 		var selection = editor.selection;
 		if (selection && !selection.isEmpty) {
 			const selectionRange = new vscode.Range(selection.start, selection.end);
@@ -228,8 +222,6 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!editor) {
 			return; // No open text editor
 		}
-
-		vscode.languages.setTextDocumentLanguage(editor.document, "sinumerik");
 
 		var selection = editor.selection;
 		if (selection && !selection.isEmpty) {
@@ -343,7 +335,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
-	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("sinumerik", {
+	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("old_sinumerik", {
 		provideDocumentSymbols(document: vscode.TextDocument,
 			token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
 			return new Promise((resolve, reject) => {
@@ -352,6 +344,8 @@ export function activate(context: vscode.ExtensionContext) {
 				var toolCallSymbols: vscode.DocumentSymbol[] = [];
 
 				const toolPattern = /^.*\(\s*WERKZEUG\s*:\s*(([1-9][0-9]{5})|([1-9][0-9]{5})\s+(.+))\s*\)/i;
+
+				const toolInfoPattern = /^.*\(\s*WZ(-|_|)INFO\s*:\s*(.+)\s*\)/i;
 
 				const mpfPattern = /%MPF\s*(\d+)/i;
 				const spfPattern = /%SPF\s*(\d+)/i;
@@ -368,7 +362,7 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 
 						if (match[2]) {
-							var symbol = new vscode.DocumentSymbol('T' + match[2], '', vscode.SymbolKind.Property, line.range, line.range);
+							var symbol = new vscode.DocumentSymbol('T ' + match[2], '', vscode.SymbolKind.Property, line.range, line.range);
 							toolCallSymbols.push(symbol);
 							var last = arcFileSymbols.at(-1);
 							if (last) {
@@ -377,11 +371,36 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 
 						if (match[3] && match[4]) {
-							var symbol = new vscode.DocumentSymbol('T' + match[3], match[4], vscode.SymbolKind.Property, line.range, line.range);
+							var symbol = new vscode.DocumentSymbol('T ' + match[3], match[4], vscode.SymbolKind.Property, line.range, line.range);
 							toolCallSymbols.push(symbol);
 							var last = arcFileSymbols.at(-1);
 							if (last) {
 								last.children.push(symbol);
+							}
+						}
+
+						if (document.lineCount >= i + 2) {
+							
+							var tempLine = document.lineAt(i + 1);
+							match = toolInfoPattern.exec(tempLine.text);
+							if (match) {
+								
+								var symbol = new vscode.DocumentSymbol('Info', match[2], vscode.SymbolKind.File, tempLine.range, tempLine.range);
+								var last = toolCallSymbols.at(-1);
+								if (last) {
+									last.children.push(symbol);
+								}
+							}
+
+							var tempLine = document.lineAt(i + 2);
+							match = toolInfoPattern.exec(tempLine.text);
+							if (match) {
+								
+								var symbol = new vscode.DocumentSymbol('Info', match[2], vscode.SymbolKind.File, tempLine.range, tempLine.range);
+								var last = toolCallSymbols.at(-1);
+								if (last) {
+									last.children.push(symbol);
+								}
 							}
 						}
 					}
@@ -416,12 +435,12 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 
 						if (spfInfo) {
-							var symbol = new vscode.DocumentSymbol('SPF ' + spfName, spfInfo, vscode.SymbolKind.Field, line.range, line.range)
+							var symbol = new vscode.DocumentSymbol('SPF ' + spfName, spfInfo, vscode.SymbolKind.Module, line.range, line.range)
 							symbols.push(symbol);
 							arcFileSymbols.push(symbol);
 						}
 						else {
-							var symbol = new vscode.DocumentSymbol('SPF ' + spfName, '', vscode.SymbolKind.Field, line.range, line.range)
+							var symbol = new vscode.DocumentSymbol('SPF ' + spfName, '', vscode.SymbolKind.Module, line.range, line.range)
 							symbols.push(symbol);
 							arcFileSymbols.push(symbol);
 						}

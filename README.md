@@ -24,8 +24,11 @@ Satznummerierung Bug gefixt!
 FileIcon hinzugefügt!
 
 ### 0.0.7
+### 0.0.8
 
 ( WERKZEUG <KWZID> <TNUMMERINFO> ) hinzugefügt!
+
+![](images/mblcnc.gif)
 
 
 **Enjoy!**
