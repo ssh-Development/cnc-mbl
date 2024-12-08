@@ -296,11 +296,11 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			const mpfPattern = /^\s*%MPF\s*(\d+)/g;
-			const spfPattern = /^\s*%SPF\s*(\d+)/g;
+			const mpfPattern = /^\s*%MPF\s*(\d+)/i;
+			const spfPattern = /^\s*%SPF\s*(\d+)/i;
 			const commentPattern = /^\s*\(/g;
 			const startWhitespacePattern = /^\s*/g;
-			const lineNumberPattern = /^\s*[Nn]\s*[0-9]*\s*/g;
+			const lineNumberPattern = /^\s*N\s*[0-9]*\s*/i;
 
 			editor.edit(eb => {
 				var lineNumber = numberSpan;
@@ -345,30 +345,67 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("sinumerik", {
 		provideDocumentSymbols(document: vscode.TextDocument,
-			token: vscode.CancellationToken): Thenable<vscode.SymbolInformation[]> {
+			token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
 			return new Promise((resolve, reject) => {
-				var symbols: vscode.SymbolInformation[] = [];
+				var symbols: vscode.DocumentSymbol[] = [];
+				var arcFileSymbols: vscode.DocumentSymbol[] = [];
+				var toolCallSymbols: vscode.DocumentSymbol[] = [];
 
-				const mpfPattern = /%MPF\s*(\d+)/g;
-				const spfPattern = /%SPF\s*(\d+)/g;
-				const infoPattern = /INFO:\+(.*)\+/g;
+				const toolPattern = /^.*\(\s*WERKZEUG\s*:\s*(([1-9][0-9]{5})|([1-9][0-9]{5})\s+(.+))\s*\)/i;
+
+				const mpfPattern = /%MPF\s*(\d+)/i;
+				const spfPattern = /%SPF\s*(\d+)/i;
+				const infoPattern = /INFO:\+(.*)\+/i;
 
 				for (var i = 0; i < document.lineCount; i++) {
 					var line = document.lineAt(i);
 
+					var match = toolPattern.exec(line.text);
+					if (match) {
+						var last = toolCallSymbols.at(-1);
+						if (last) {
+							last.range = new vscode.Range(last.range.start, line.range.start);
+						}
+
+						if (match[2]) {
+							var symbol = new vscode.DocumentSymbol('T' + match[2], '', vscode.SymbolKind.Property, line.range, line.range);
+							toolCallSymbols.push(symbol);
+							var last = arcFileSymbols.at(-1);
+							if (last) {
+								last.children.push(symbol);
+							}
+						}
+
+						if (match[3] && match[4]) {
+							var symbol = new vscode.DocumentSymbol('T' + match[3], match[4], vscode.SymbolKind.Property, line.range, line.range);
+							toolCallSymbols.push(symbol);
+							var last = arcFileSymbols.at(-1);
+							if (last) {
+								last.children.push(symbol);
+							}
+						}
+					}
+
 					var match = mpfPattern.exec(line.text);
 					if (match) {
+						var last = arcFileSymbols.at(-1);
+						if (last) {
+							last.range = new vscode.Range(last.range.start, line.range.start);
+						}
+
 						var mpfName = match[1];
-						symbols.push({
-							containerName: "mpf",
-							name: "MPF " + mpfName,
-							kind: vscode.SymbolKind.Field,
-							location: new vscode.Location(document.uri, line.range)
-						})
+						var symbol = new vscode.DocumentSymbol('MPF', mpfName, vscode.SymbolKind.Field, line.range, line.range)
+						symbols.push(symbol);
+						arcFileSymbols.push(symbol);
 					}
 
 					var match = spfPattern.exec(line.text);
 					if (match) {
+						var last = arcFileSymbols.at(-1);
+						if (last) {
+							last.range = new vscode.Range(last.range.start, line.range.start);
+						}
+
 						var spfName = match[1];
 						var spfInfo = null;
 						if (document.lineCount >= i + 2) {
@@ -378,13 +415,17 @@ export function activate(context: vscode.ExtensionContext) {
 							if (match) { spfInfo = match[1]; }
 						}
 
+						if (spfInfo) {
+							var symbol = new vscode.DocumentSymbol('SPF ' + spfName, spfInfo, vscode.SymbolKind.Field, line.range, line.range)
+							symbols.push(symbol);
+							arcFileSymbols.push(symbol);
+						}
+						else {
+							var symbol = new vscode.DocumentSymbol('SPF ' + spfName, '', vscode.SymbolKind.Field, line.range, line.range)
+							symbols.push(symbol);
+							arcFileSymbols.push(symbol);
+						}
 
-						symbols.push({
-							containerName: "spf",
-							name: "SPF " + spfName + ": " + spfInfo,
-							kind: vscode.SymbolKind.Package,
-							location: new vscode.Location(document.uri, line.range)
-						})
 					}
 				}
 

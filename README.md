@@ -23,5 +23,9 @@ Satznummerierung Bug gefixt!
 
 FileIcon hinzugefügt!
 
+### 0.0.7
+
+( WERKZEUG <KWZID> <TNUMMERINFO> ) hinzugefügt!
+
 
 **Enjoy!**
