@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			editor.edit(eb => {
 				highlightedLines.forEach((x, i) => {
-					const pattern = /(X|Y|Z)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
+					const pattern = /(X|Y|Z|I|J|K)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
 					var matches = x.toUpperCase().matchAll(pattern);
 					for (const match of matches) {
 						if (i == 0) {
@@ -55,6 +55,19 @@ export function activate(context: vscode.ExtensionContext) {
 							}
 						}
 
+						if (match[1] == "K") {
+							if (match[4] == "-") {
+								eb.replace(range, match[0].replace(pattern, "I$2$3$5$6").replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+"));
+							} else {
+								if (match[6] != "0") {
+									eb.replace(range, match[0].replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+").replace(pattern, "I$2$3-$5$6"));
+								}
+								else {
+									eb.replace(range, match[0].replace(pattern, "I$2$3$5$6"));
+								}
+							}
+						}
+
 						if (match[1] == "X") {
 							if (match[4] == "-") {
 								eb.replace(range, match[0].replace(pattern, "Y$2$3$5$6").replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+"));
@@ -68,8 +81,25 @@ export function activate(context: vscode.ExtensionContext) {
 							}
 						}
 
+						if (match[1] == "I") {
+							if (match[4] == "-") {
+								eb.replace(range, match[0].replace(pattern, "J$2$3$5$6").replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+"));
+							} else {
+								if (match[6] != "0") {
+									eb.replace(range, match[0].replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+").replace(pattern, "J$2$3-$5$6"));
+								}
+								else {
+									eb.replace(range, match[0].replace(pattern, "J$2$3$5$6"));
+								}
+							}
+						}
+
 						if (match[1] == "Y") {
 							eb.replace(range, match[0].replace(pattern, "Z$2$3$4$5$6"));
+						}
+
+						if (match[1] == "J") {
+							eb.replace(range, match[0].replace(pattern, "K$2$3$4$5$6"));
 						}
 					}
 
@@ -114,7 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			editor.edit(eb => {
 				highlightedLines.forEach((x, i) => {
-					const pattern = /(X|Y|Z)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
+					const pattern = /(X|Y|Z|I|J|K)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
 					var matches = x.toUpperCase().matchAll(pattern);
 					for (const match of matches) {
 						if (i == 0) {
@@ -140,8 +170,25 @@ export function activate(context: vscode.ExtensionContext) {
 							}
 						}
 
+						if (match[1] == "K") {
+							if (match[4] == "-") {
+								eb.replace(range, match[0].replace(pattern, "J$2$3$5$6").replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+"));
+							} else {
+								if (match[6] != "0") {
+									eb.replace(range, match[0].replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+").replace(pattern, "J$2$3-$5$6"));
+								}
+								else {
+									eb.replace(range, match[0].replace(pattern, "J$2$3$5$6"));
+								}
+							}
+						}
+
 						if (match[1] == "Y") {
 							eb.replace(range, match[0].replace(pattern, "Z$2$3$4$5$6"));
+						}
+
+						if (match[1] == "J") {
+							eb.replace(range, match[0].replace(pattern, "K$2$3$4$5$6"));
 						}
 					}
 
@@ -186,7 +233,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			editor.edit(eb => {
 				highlightedLines.forEach((x, i) => {
-					const pattern = /(X|Y|Z)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
+					const pattern = /(X|Y|Z|I|J|K)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
 					var matches = x.toUpperCase().matchAll(pattern);
 					for (const match of matches) {
 						if (i == 0) {
@@ -204,12 +251,26 @@ export function activate(context: vscode.ExtensionContext) {
 							eb.replace(range, match[0].replace(pattern, "X$2$3$4$5$6"));
 						}
 
+						if (match[1] == "K") {
+							eb.replace(range, match[0].replace(pattern, "I$2$3$4$5$6"));
+						}
+
+
 						if (match[1] == "X") {
 							eb.replace(range, match[0].replace(pattern, "Y$2$3$4$5$6"));
 						}
 
+						if (match[1] == "I") {
+							eb.replace(range, match[0].replace(pattern, "J$2$3$4$5$6"));
+						}
+
+
 						if (match[1] == "Y") {
 							eb.replace(range, match[0].replace(pattern, "Z$2$3$4$5$6"));
+						}
+
+						if (match[1] == "J") {
+							eb.replace(range, match[0].replace(pattern, "K$2$3$4$5$6"));
 						}
 					}
 				});
@@ -231,7 +292,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			editor.edit(eb => {
 				highlightedLines.forEach((x, i) => {
-					const pattern = /(X|Y|Z)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
+					const pattern = /(X|Y|Z|I|J|K)(=|)(\s*|)(-|)(\s*|)([Rr0-9.+-\\*/]+)/g;
 					var matches = x.toUpperCase().matchAll(pattern);
 					for (const match of matches) {
 						if (i == 0) {
@@ -257,12 +318,34 @@ export function activate(context: vscode.ExtensionContext) {
 							}
 						}
 
+						if (match[1] == "I") {
+							if (match[4] == "-") {
+								eb.replace(range, match[0].replace(pattern, "I$2$3$5$6").replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+"));
+							} else {
+								if (match[6] != "0") {
+									eb.replace(range, match[0].replaceAll("-", "M").replaceAll("+", "-").replaceAll("M", "+").replace(pattern, "I$2$3-$5$6"));
+								}
+								else {
+									eb.replace(range, match[0].replace(pattern, "I$2$3$5$6"));
+								}
+							}
+						}
+
 						if (match[1] == "Y") {
 							eb.replace(range, match[0].replace(pattern, "Z$2$3$4$5$6"));
 						}
 
+						if (match[1] == "J") {
+							eb.replace(range, match[0].replace(pattern, "K$2$3$4$5$6"));
+						}
+
+
 						if (match[1] == "Z") {
 							eb.replace(range, match[0].replace(pattern, "Y$2$3$4$5$6"));
+						}
+
+						if (match[1] == "K") {
+							eb.replace(range, match[0].replace(pattern, "J$2$3$4$5$6"));
 						}
 					}
 				});

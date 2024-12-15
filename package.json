@@ -2,7 +2,7 @@
   "name": "cnc-mbl",
   "displayName": "cnc-mbl",
   "description": "VSC Erweiterung für Sinumerik Dateien.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "sshDevelopmentUG",
   "repository": {
     "url": "https://github.com/ssh-Development/cnc-mbl.git/"

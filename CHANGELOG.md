@@ -31,3 +31,7 @@ FileIcon hinzugefügt!
 ### 0.0.8
 
 ( WZ-INFO: <INFO> ) hinzugefügt!
+
+### 0.0.9
+
+I, J und K bei G2/ G3 Kreisinterpolationen wird mit umgestellt!
