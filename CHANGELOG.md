@@ -4,6 +4,30 @@ All notable changes to the "cnc-mbl" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+### 0.0.1
 
-- Initial release
+Initial release.
+
+### 0.0.3
+
+G41 <-> G42 hinzugefügt!
+
+### 0.0.4
+
+Satznummerierung hinzugefügt!
+
+### 0.0.5
+
+Satznummerierung Bug gefixt!
+
+### 0.0.6
+
+FileIcon hinzugefügt!
+
+### 0.0.7
+
+( WERKZEUG <KWZID> <TNUMMERINFO> ) hinzugefügt!
+
+### 0.0.8
+
+( WZ-INFO: <INFO> ) hinzugefügt!
