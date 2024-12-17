@@ -418,7 +418,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
-	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("old_sinumerik", {
+	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider('old_sinumerik', {
 		provideDocumentSymbols(document: vscode.TextDocument,
 			token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
 			return new Promise((resolve, reject) => {
@@ -427,8 +427,6 @@ export function activate(context: vscode.ExtensionContext) {
 				var toolCallSymbols: vscode.DocumentSymbol[] = [];
 
 				const toolPattern = /^.*\(\s*WERKZEUG\s*:\s*(([1-9][0-9]{5})|([1-9][0-9]{5})\s+(.+))\s*\)/i;
-
-				const toolInfoPattern = /^.*\(\s*WZ(-|_|)INFO\s*:\s*(.+)\s*\)/i;
 
 				const mpfPattern = /%MPF\s*(\d+)/i;
 				const spfPattern = /%SPF\s*(\d+)/i;
@@ -459,31 +457,6 @@ export function activate(context: vscode.ExtensionContext) {
 							var last = arcFileSymbols.at(-1);
 							if (last) {
 								last.children.push(symbol);
-							}
-						}
-
-						if (document.lineCount >= i + 2) {
-							
-							var tempLine = document.lineAt(i + 1);
-							match = toolInfoPattern.exec(tempLine.text);
-							if (match) {
-								
-								var symbol = new vscode.DocumentSymbol('Info', match[2], vscode.SymbolKind.File, tempLine.range, tempLine.range);
-								var last = toolCallSymbols.at(-1);
-								if (last) {
-									last.children.push(symbol);
-								}
-							}
-
-							var tempLine = document.lineAt(i + 2);
-							match = toolInfoPattern.exec(tempLine.text);
-							if (match) {
-								
-								var symbol = new vscode.DocumentSymbol('Info', match[2], vscode.SymbolKind.File, tempLine.range, tempLine.range);
-								var last = toolCallSymbols.at(-1);
-								if (last) {
-									last.children.push(symbol);
-								}
 							}
 						}
 					}
@@ -533,6 +506,31 @@ export function activate(context: vscode.ExtensionContext) {
 
 				resolve(symbols);
 			});
+		}
+	}));
+
+	context.subscriptions.push(vscode.languages.registerDefinitionProvider('old_sinumerik', {
+		provideDefinition(document: vscode.TextDocument,
+			position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Location> {
+			return new Promise((resolve, reject) => {
+				const range = document.getWordRangeAtPosition(position);
+				const word = document.getText(range);
+
+				var match = /L(\d+)/i.exec(word)
+				if(match)
+				{
+					const pattern = new RegExp('%SPF\\s+' + match[1], 'i');
+					for (var i = 0; i < document.lineCount; i++) {
+						var line = document.lineAt(i);
+
+						if(line.text.match(pattern))
+						{
+							resolve(new vscode.Location(document.uri, line.range))
+						}
+					}
+				}
+
+			})
 		}
 	}));
 
