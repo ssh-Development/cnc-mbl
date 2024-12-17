@@ -39,3 +39,7 @@ I, J und K bei G2/ G3 Kreisinterpolationen wird mit umgestellt!
 ### 0.0.10
 
 Unterprogrammsprung hinzugefügt!
+
+### 0.0.11
+
+Diagnostics hinzugefügt!

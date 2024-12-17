@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+let diagnosticCollection: vscode.DiagnosticCollection;
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -534,6 +535,63 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
+	diagnosticCollection = vscode.languages.createDiagnosticCollection('go');
+	context.subscriptions.push(diagnosticCollection);
+
+	if (vscode.window.activeTextEditor) {
+		updateDiagnostics(vscode.window.activeTextEditor.document, diagnosticCollection);
+	}
+
+	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
+		if (editor) {
+			updateDiagnostics(editor.document, diagnosticCollection);
+		}
+	}));
+
+	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(editor => {
+		if (editor) {
+			updateDiagnostics(editor.document, diagnosticCollection);
+		}
+	}));
+
+}
+
+function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
+	if (document)
+		if (document.languageId == 'old_sinumerik') {
+			collection.clear();
+			var diagnostics: vscode.Diagnostic[] = [];
+			var spfs: string[] = ['L6','L9930','L9920','L9923'];
+
+			const spfPattern = /%SPF\s*(\d+)/i;
+
+			for (var i = 0; i < document.lineCount; i++) {
+				var line = document.lineAt(i);
+				var text = line.text.toUpperCase();
+
+				var match = spfPattern.exec(text)
+				if (match) {
+					if(spfs.includes(match[1]))
+					{
+						diagnostics.push({
+							code: undefined,
+							message: 'Unterprogramm ist schon deklariert!',
+							range: line.range,
+							severity: vscode.DiagnosticSeverity.Error,
+							source: undefined,
+							relatedInformation: undefined
+						});
+					}
+					else{
+						spfs.push(match[1]);
+					}
+				}
+			}
+
+			collection.set(document.uri, diagnostics);
+		} else {
+			collection.clear();
+		}
 }
 
 // This method is called when your extension is deactivated
