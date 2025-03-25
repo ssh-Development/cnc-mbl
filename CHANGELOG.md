@@ -43,3 +43,7 @@ Unterprogrammsprung hinzugefügt!
 ### 0.0.11
 
 Diagnostics hinzugefügt!
+
+### 0.0.12
+
+REP für Wiederholwerkzeuge hinzugefügt!

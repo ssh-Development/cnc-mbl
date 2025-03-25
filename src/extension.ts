@@ -444,21 +444,33 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 
 						if (match[2]) {
-							var symbol = new vscode.DocumentSymbol('T ' + match[2], '', vscode.SymbolKind.Property, line.range, line.range);
-							toolCallSymbols.push(symbol);
+							var name = 'T ' + match[2];
+							var symbol = new vscode.DocumentSymbol(name, '', vscode.SymbolKind.Property, line.range, line.range);
 							var last = arcFileSymbols.at(-1);
 							if (last) {
+								if (name != 'T 0') {
+									if (last.children.find(x => x.name == name)) {
+										symbol.detail += ' - REP';
+									}
+								}
 								last.children.push(symbol);
 							}
+							toolCallSymbols.push(symbol);
 						}
 
 						if (match[3] && match[4]) {
-							var symbol = new vscode.DocumentSymbol('T ' + match[3], match[4], vscode.SymbolKind.Property, line.range, line.range);
-							toolCallSymbols.push(symbol);
+							var name = 'T ' + match[3];
+							var symbol = new vscode.DocumentSymbol(name, match[4], vscode.SymbolKind.Property, line.range, line.range);
 							var last = arcFileSymbols.at(-1);
 							if (last) {
+								if (name != 'T 0') {
+									if (last.children.find(x => x.name == name)) {
+										symbol.detail += ' - REP';
+									}
+								}
 								last.children.push(symbol);
 							}
+							toolCallSymbols.push(symbol);
 						}
 					}
 
@@ -518,14 +530,12 @@ export function activate(context: vscode.ExtensionContext) {
 				const word = document.getText(range);
 
 				var match = /L(\d+)/i.exec(word)
-				if(match)
-				{
-					const pattern = new RegExp('%SPF\\s+' + match[1], 'i');
+				if (match) {
+					const pattern = new RegExp('^%SPF\\s+' + match[1], 'i');
 					for (var i = 0; i < document.lineCount; i++) {
 						var line = document.lineAt(i);
 
-						if(line.text.match(pattern))
-						{
+						if (line.text.match(pattern)) {
 							resolve(new vscode.Location(document.uri, line.range))
 						}
 					}
@@ -561,9 +571,9 @@ function updateDiagnostics(document: vscode.TextDocument, collection: vscode.Dia
 		if (document.languageId == 'old_sinumerik') {
 			collection.clear();
 			var diagnostics: vscode.Diagnostic[] = [];
-			var spfs: string[] = ['L6','L9930','L9920','L9923'];
+			var spfs: string[] = ['L6', 'L9930', 'L9920', 'L9923'];
 
-			const spfPattern = /%SPF\s*(\d+)/i;
+			const spfPattern = /^%SPF\s*(\d+)/i;
 
 			for (var i = 0; i < document.lineCount; i++) {
 				var line = document.lineAt(i);
@@ -571,8 +581,7 @@ function updateDiagnostics(document: vscode.TextDocument, collection: vscode.Dia
 
 				var match = spfPattern.exec(text)
 				if (match) {
-					if(spfs.includes(match[1]))
-					{
+					if (spfs.includes(match[1])) {
 						diagnostics.push({
 							code: undefined,
 							message: 'Unterprogramm ist schon deklariert!',
@@ -582,7 +591,7 @@ function updateDiagnostics(document: vscode.TextDocument, collection: vscode.Dia
 							relatedInformation: undefined
 						});
 					}
-					else{
+					else {
 						spfs.push(match[1]);
 					}
 				}
